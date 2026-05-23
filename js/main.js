@@ -20,59 +20,48 @@ window.addEventListener('load', function () {
 });
 
 /* ═══════════════════════════════════════════════════════
-   2. LENIS SMOOTH SCROLL
+   2. LENIS SMOOTH SCROLL — with graceful fallback
    ═══════════════════════════════════════════════════════ */
-var lenis = new Lenis({ duration: 1.2, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true, smoothTouch: false });
-lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
-gsap.ticker.lagSmoothing(0);
+var lenis = null;
+var lenisEnabled = false;
 
-/* ═══════════════════════════════════════════════════════
-   3. CUSTOM CURSOR WITH TRAIL
-   ═══════════════════════════════════════════════════════ */
-(function () {
-  if (window.innerWidth < 768) return;
-  var dot = document.getElementById('cursorDot');
-  var ring = document.getElementById('cursorRing');
-  var trailDots = document.querySelectorAll('.trail-dot');
-  if (!dot || !ring) return;
-  var mx = 0, my = 0, rx = 0, ry = 0;
-  var trailCoords = [];
-  trailDots.forEach(function () { trailCoords.push({ x: 0, y: 0 }); });
+// Normalize ScrollTrigger touch/wheel events first (beneficial with or without Lenis)
+ScrollTrigger.normalizeScroll(true);
 
-  document.addEventListener('mousemove', function (e) {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = 'translate(' + mx + 'px,' + my + 'px) translate(-50%,-50%)';
-    dot.style.left = '0'; dot.style.top = '0';
+try {
+  if (typeof Lenis === 'undefined') throw new Error('Lenis library not loaded');
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    smoothWheel: true,
+    smoothTouch: false
   });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  lenisEnabled = true;
 
-  (function raf() {
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
-    ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)';
-    ring.style.left = '0'; ring.style.top = '0';
-    var px = mx, py = my;
-    trailDots.forEach(function (td, i) {
-      var c = trailCoords[i]; var sp = 0.12 - i * 0.012;
-      c.x += (px - c.x) * sp; c.y += (py - c.y) * sp;
-      td.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) translate(-50%,-50%)';
-      td.style.left = '0'; td.style.top = '0';
-      td.style.opacity = (1 - i * 0.12).toString();
-      px = c.x; py = c.y;
-    });
-    requestAnimationFrame(raf);
-  })();
+  // Refresh ScrollTrigger after Lenis establishes virtual scroll height
+  requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+  setTimeout(function () { ScrollTrigger.refresh(); }, 300);
+} catch (e) {
+  console.warn('Lenis smooth scroll unavailable — falling back to native scroll:', e.message);
+}
 
-  var hoverEls = 'a, button, .room-card, .gallery-item, .stat-card, .amenity-card, .testimonial-card, .whatsapp-float, .location-nearby-tag';
-  document.querySelectorAll(hoverEls).forEach(function (el) {
-    el.addEventListener('mouseenter', function () { ring.classList.add('is-hovering'); });
-    el.addEventListener('mouseleave', function () { ring.classList.remove('is-hovering'); });
-  });
-  document.querySelectorAll('.gallery-item').forEach(function (el) {
-    el.addEventListener('mouseenter', function () { ring.classList.add('is-viewing'); });
-    el.addEventListener('mouseleave', function () { ring.classList.remove('is-viewing'); });
-  });
-})();
+// Safe scroll helper — uses Lenis when available, native smooth scroll as fallback
+function safeScrollTo(selector, offset) {
+  offset = offset || 0;
+  var target = document.querySelector(selector);
+  if (!target) return;
+  if (lenis && lenisEnabled) {
+    lenis.scrollTo(target, { offset: -offset });
+  } else {
+    var y = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+
 
 /* ═══════════════════════════════════════════════════════
    4. SCROLL PROGRESS
@@ -94,7 +83,9 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
   ribbon.className = 'shader-ribbon';
   shader.appendChild(ribbon);
 
-  if (window.innerWidth < 768) return;
+  // Only enable mouse-reactive movement on non-touch devices with enough screen space
+  var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (window.innerWidth < 768 || isTouchDevice) return;
 
   // Mouse-reactive movement — the aurora FOLLOWS your cursor
   document.addEventListener('mousemove', function (e) {
@@ -114,7 +105,8 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
     'rgba(255,107,53,0.15)', 'rgba(212,175,55,0.12)', 'rgba(107,39,55,0.10)',
     'rgba(255,107,53,0.10)', 'rgba(212,175,55,0.08)'
   ];
-  var count = window.innerWidth < 768 ? 6 : 15;
+  var winW = window.innerWidth;
+  var count = winW < 480 ? 3 : winW < 768 ? 6 : winW < 1024 ? 10 : 15;
 
   for (var i = 0; i < count; i++) {
     var c = document.createElement('div');
@@ -145,15 +137,18 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
 (function () {
   var container = document.getElementById('particleContainer');
   if (!container) return;
-  var isMobile = window.innerWidth < 768;
+  var winW = window.innerWidth;
+  var isMobile = winW < 768;
+  var isSmall = winW < 480;
   var symbols = ['🌸', '🪷', '🌺', '✦', '✧', '·'];
-  var active = 0, max = isMobile ? 8 : 25;
+  var active = 0, max = isSmall ? 4 : isMobile ? 8 : 25;
+  var intervalMs = isSmall ? 2500 : isMobile ? 1500 : 600;
 
   function create() {
     if (active >= max) return;
     var p = document.createElement('div'); p.className = 'particle';
     var isOrb = Math.random() > 0.5;
-    var size = 8 + Math.random() * 16;
+    var size = isSmall ? 5 + Math.random() * 8 : 8 + Math.random() * 16;
     var dur = 12 + Math.random() * 18;
     if (isOrb) {
       p.style.width = size + 'px'; p.style.height = size + 'px';
@@ -172,15 +167,16 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
     container.appendChild(p); active++;
     setTimeout(function () { p.remove(); active--; }, (dur + 2) * 1000);
   }
-  setInterval(create, isMobile ? 1500 : 600);
-  for (var i = 0; i < 8; i++) create();
+  setInterval(create, intervalMs);
+  for (var i = 0; i < 8; i++) { if (active < max) create(); }
 })();
 
 /* ═══════════════════════════════════════════════════════
    8. MAGNETIC BUTTONS
    ═══════════════════════════════════════════════════════ */
 (function () {
-  if (window.innerWidth < 768) return;
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (window.innerWidth < 768 || isTouch) return;
   document.querySelectorAll('.btn-primary, .btn-outline, .nav-cta, .contact-btn-primary, .contact-btn-secondary, .room-card-btn, .spread-toggle').forEach(function (btn) {
     btn.addEventListener('mousemove', function (e) {
       var r = btn.getBoundingClientRect();
@@ -198,7 +194,8 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
    9. CIRCLE HOVER EFFECTS
    ═══════════════════════════════════════════════════════ */
 (function () {
-  if (window.innerWidth < 768) return;
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (window.innerWidth < 768 || isTouch) return;
   document.querySelectorAll('.btn-primary, .btn-outline, .room-card-btn, .contact-btn-primary, .contact-btn-secondary, .nav-cta').forEach(function (el) {
     el.addEventListener('mouseenter', function (e) {
       var c = el.querySelector('.circle-hover-container');
@@ -281,7 +278,8 @@ heroTL
 
 /* 11. HERO PARALLAX */
 (function () {
-  if (window.innerWidth < 768) return;
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (window.innerWidth < 768 || isTouch) return;
   var hero = document.getElementById('hero');
   if (!hero) return;
   hero.addEventListener('mousemove', function (e) {
@@ -329,101 +327,36 @@ ScrollTrigger.create({ trigger: 'body', start: '80px top',
 });
 
 /* ═══════════════════════════════════════════════════════
-   🎴 14. CARD SHUFFLE ANIMATION — THE SHOWSTOPPER
-   Cards start stacked in center, then DEAL OUT like a card deck
+   14. CARDS FADE IN — Simple reveal (no rotate/flip)
    ═══════════════════════════════════════════════════════ */
 (function () {
   var cards = document.querySelectorAll('.room-card');
   if (!cards.length) return;
-
-  // Set initial DRAMATICALLY stacked state
   cards.forEach(function (card, i) {
-    card.classList.add('shuffle-stacked');
-    card.style.transitionDelay = '0s';
-  });
-
-  ScrollTrigger.create({
-    trigger: '#roomsGrid',
-    start: 'top 80%',
-    once: true,
-    onEnter: function () {
-      // Phase 1: Quick flash — make them visible but stacked
-      cards.forEach(function (card, i) {
-        card.classList.remove('shuffle-stacked');
-        // Start from center, stacked on top of each other
-        gsap.set(card, {
-          opacity: 0,
-          y: 100,
-          scale: 0.6,
-          rotateY: 180,
-          rotateX: 30,
-          rotateZ: (i - 1) * 8,
-          transformPerspective: 1500,
-          transformOrigin: 'center center'
-        });
-      });
-
-      // Phase 2: Deal out with dramatic flair
-      var tl = gsap.timeline();
-
-      cards.forEach(function (card, i) {
-        tl.to(card, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotateY: 0,
-          rotateX: 0,
-          rotateZ: 0,
-          duration: 1.2,
-          ease: 'back.out(1.7)',
-          clearProps: 'transform,opacity'
-        }, i * 0.3);
-
-        // Add a slight bounce on landing
-        tl.to(card, {
-          y: -15,
-          duration: 0.15,
-          ease: 'power2.out'
-        }, i * 0.3 + 1.0);
-        tl.to(card, {
-          y: 0,
-          duration: 0.3,
-          ease: 'bounce.out'
-        }, i * 0.3 + 1.15);
-
-        // Flash glow on landing
-        tl.fromTo(card, { boxShadow: '0 0 0px rgba(255,107,53,0)' }, {
-          boxShadow: '0 20px 60px rgba(255,107,53,0.25), 0 0 40px rgba(212,175,55,0.15)',
-          duration: 0.3,
-          yoyo: true, repeat: 1
-        }, i * 0.3 + 1.0);
-      });
-    }
+    gsap.from(card, {
+      opacity: 0, y: 60, duration: 0.8, delay: i * 0.15,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: '#roomsGrid', start: 'top 85%', toggleActions: 'play none none none' }
+    });
   });
 })();
 
 /* ═══════════════════════════════════════════════════════
-   15. 3D CARD TILT (Mouse tracking)
+   15. CARD HOVER — Subtle lift only (no rotate/flip)
    ═══════════════════════════════════════════════════════ */
 (function () {
   if (window.innerWidth < 768) return;
   document.querySelectorAll('.room-card').forEach(function (card) {
-    card.addEventListener('mousemove', function (e) {
-      var r = card.getBoundingClientRect();
-      var x = e.clientX - r.left, y = e.clientY - r.top;
-      var cx = r.width / 2, cy = r.height / 2;
-      var rotX = (y - cy) / 12, rotY = (cx - x) / 12;
-      var angle = Math.atan2(y - cy, x - cx) * (180 / Math.PI) + 180;
-      card.style.setProperty('--glow-angle', angle + 'deg');
-      gsap.to(card, { rotateX: rotX, rotateY: rotY, scale: 1.04, duration: 0.3, ease: 'power2.out', transformPerspective: 1000 });
+    card.addEventListener('mouseenter', function () {
+      gsap.to(card, { scale: 1.02, y: -4, duration: 0.3, ease: 'power2.out' });
     });
     card.addEventListener('mouseleave', function () {
-      gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, duration: 0.6, ease: 'power3.out', clearProps: 'transform' });
+      gsap.to(card, { scale: 1, y: 0, duration: 0.4, ease: 'power3.out' });
     });
   });
 })();
 
-/* 16. CARD SPREAD */
+/* 16. CARD GRID VIEW TOGGLE */
 (function () {
   var btn = document.getElementById('spreadToggle');
   var grid = document.getElementById('roomsGrid');
@@ -476,6 +409,9 @@ var roomData = {
   }
 };
 
+// ── Touch device detection ──
+var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 function openDoorExperience(roomType) {
   var room = roomData[roomType];
   if (!room) return;
@@ -502,7 +438,8 @@ function openDoorExperience(roomType) {
     '<div class="room-interior-header">' +
     '<div class="room-interior-title">' + room.name + '</div>' +
     '<button class="room-interior-close" onclick="closeDoorExperience()">✕</button>' +
-    '</div>' + hotspotHTML +
+    '</div>' +
+    hotspotHTML +
     '<div class="room-interior-content">' +
     '<p class="room-interior-desc">' + room.desc + '<br><strong style="color:#D4AF37;font-size:18px;margin-top:6px;display:inline-block;">' + room.price + '</strong></p>' +
     '<div class="room-interior-features">' + featuresHTML + '</div>' +
@@ -555,7 +492,10 @@ function openDoorExperience(roomType) {
 function closeDoorExperience() {
   var overlay = document.getElementById('doorOverlay');
   if (!overlay) return;
-  var tl = gsap.timeline({ onComplete: function () { overlay.remove(); document.body.style.overflow = ''; } });
+  var tl = gsap.timeline({ onComplete: function () {
+    overlay.remove();
+    document.body.style.overflow = '';
+  } });
   tl.to(overlay.querySelector('.room-interior-panel'), { opacity: 0, duration: 0.3 });
   tl.to(overlay.querySelectorAll('.room-hotspot'), { scale: 0, opacity: 0, duration: 0.2, stagger: 0.05 }, 0);
   tl.add(function () {
@@ -574,20 +514,20 @@ function closeDoorExperience() {
   tl.to(overlay, { opacity: 0, duration: 0.4 }, 1.3);
 }
 
-// Attach door animation to Enter Room buttons
+// Attach door animation to Enter Room buttons — subtle push only, no rotate/flip
 document.querySelectorAll('.enter-room-btn').forEach(function (btn) {
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
     var roomType = this.dataset.room;
     var card = this.closest('.room-card');
 
-    // Dramatic card press + expand
+    // Subtle press → small lift → open door
     var tl = gsap.timeline();
-    tl.to(card, { scale: 1.05, boxShadow: '0 30px 80px rgba(255,107,53,0.3)', duration: 0.2, ease: 'power2.out' });
-    tl.to(card, { scale: 0.95, duration: 0.15 });
-    tl.to(card, { scale: 1, boxShadow: '0 8px 32px rgba(107,39,55,0.12)', duration: 0.3,
+    tl.to(card, { scale: 0.98, duration: 0.1, ease: 'power2.in' });
+    tl.to(card, { scale: 1.02, y: -3, duration: 0.15, ease: 'power2.out',
       onComplete: function () { openDoorExperience(roomType); }
     });
+    tl.to(card, { scale: 1, y: 0, duration: 0.3, ease: 'power3.out' }, 0.5);
   });
 });
 
@@ -637,41 +577,222 @@ gsap.from('.contact-section .contact-inner > *', { y: 30, opacity: 0, duration: 
   scrollTrigger: { trigger: '.contact-section', start: 'top 85%' }
 });
 
-/* 20. TEXT SPLIT */
-document.querySelectorAll('.section-title').forEach(function (title) {
-  var text = title.textContent; title.innerHTML = '';
-  for (var i = 0; i < text.length; i++) {
-    var span = document.createElement('span'); span.className = 'split-char';
-    span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
-    title.appendChild(span);
-  }
-  gsap.from(title.querySelectorAll('.split-char'), {
-    opacity: 0, y: 50, rotateX: -80, stagger: 0.03, duration: 0.7, ease: 'back.out(1.5)', transformPerspective: 500,
-    scrollTrigger: { trigger: title, start: 'top 85%' }
-  });
-});
+/* ═══════════════════════════════════════════════════════
+   20. SPLITTYPE TEXT REVEALS — Cinematic typography across sections
+   Splits headings into chars + subtitles into words for staggered reveals
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  if (typeof SplitType === 'undefined') return;
 
-/* 21. TESTIMONIAL CAROUSEL */
+  var splitTweens = [];
+  var splitInstances = [];
+
+  function initTextSplits() {
+    // Revert any existing splits so elements return to raw text
+    splitInstances.forEach(function (s) { s.revert(); });
+    // Kill previous tweens & their scroll triggers
+    splitTweens.forEach(function (t) {
+      if (t.scrollTrigger) t.scrollTrigger.kill();
+      t.kill();
+    });
+    splitInstances = [];
+    splitTweens = [];
+
+    // ── Section titles: character-level dramatic reveal ──
+    document.querySelectorAll('.section-title').forEach(function (title) {
+      var s = new SplitType(title, { types: 'chars' });
+      splitInstances.push(s);
+      var twn = gsap.from(s.chars, {
+        opacity: 0, y: 50, rotateX: -80,
+        stagger: 0.03, duration: 0.7,
+        ease: 'back.out(1.5)', transformPerspective: 500,
+        scrollTrigger: {
+          trigger: title.closest('section') || title,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+      splitTweens.push(twn);
+    });
+
+    // ── Section subtitles: word-level reveal for smoother reading ──
+    document.querySelectorAll('.section-sub').forEach(function (sub) {
+      var s = new SplitType(sub, { types: 'words' });
+      splitInstances.push(s);
+      var twn = gsap.from(s.words, {
+        opacity: 0, y: 30, filter: 'blur(4px)',
+        stagger: 0.04, duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sub.closest('section') || sub,
+          start: 'top 88%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+      splitTweens.push(twn);
+    });
+
+    // ── Content headings inside sections ──
+    // Note: .contact-section .section-title is already handled by the .section-title loop above
+    var headingSelectors = [
+      '.sanctuary-content h2',
+      '.location-info h3'
+    ];
+    document.querySelectorAll(headingSelectors.join(',')).forEach(function (el) {
+      var s = new SplitType(el, { types: 'chars' });
+      splitInstances.push(s);
+      var twn = gsap.from(s.chars, {
+        opacity: 0, y: 40, rotateX: -60,
+        stagger: 0.03, duration: 0.6,
+        ease: 'back.out(1.4)', transformPerspective: 500,
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+      splitTweens.push(twn);
+    });
+  }
+
+  // Initialise on next frame so DOM is ready
+  requestAnimationFrame(function () {
+    initTextSplits();
+  });
+
+    // ── Debounced re-split on resize ──
+  var resizeTimer;
+  var lastWinW = window.innerWidth;
+  window.addEventListener('resize', function () {
+    var newW = window.innerWidth;
+    // Only re-split if width crosses a breakpoint threshold to avoid unnecessary work
+    var breakpoints = [360, 480, 600, 768, 820, 1024, 1440];
+    var crossed = breakpoints.some(function (bp) {
+      return (lastWinW < bp && newW >= bp) || (lastWinW >= bp && newW < bp);
+    });
+    lastWinW = newW;
+    if (!crossed) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      initTextSplits();
+      ScrollTrigger.refresh();
+    }, 350);
+  });
+})();
+
+/* 21. TESTIMONIAL CAROUSEL — GSAP-Powered Slide Animation */
 (function () {
   var track = document.getElementById('testimonialsTrack');
   var dots = document.querySelectorAll('.testimonial-dot');
-  if (!track || !dots.length) return;
+  var cards = document.querySelectorAll('.testimonial-card');
+  if (!track || !dots.length || !cards.length) return;
   var current = 0, total = dots.length, autoplay, startX = 0;
+  var wrap = track.parentElement;
+  var isAnimating = false;
+
+  // First card visible; others hidden by CSS
+  gsap.set(cards[0], { clearProps: 'all' });
 
   function goTo(index) {
-    current = ((index % total) + total) % total;
-    track.style.transform = 'translateX(-' + (current * 100) + '%)';
-    dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
-  }
-  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(parseInt(this.dataset.index)); clearInterval(autoplay); startAuto(); }); });
-  function next() { goTo(current + 1); }
-  function startAuto() { autoplay = setInterval(next, 5000); }
+    if (isAnimating) return;
+    index = ((index % total) + total) % total;
+    if (index === current) return;
+    isAnimating = true;
 
-  var wrap = track.parentElement;
-  wrap.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
-  wrap.addEventListener('touchend', function (e) { var diff = startX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) { goTo(diff > 0 ? current + 1 : current - 1); clearInterval(autoplay); startAuto(); } }, { passive: true });
-  wrap.addEventListener('mouseenter', function () { clearInterval(autoplay); });
+    var direction = index > current || (current === total - 1 && index === 0) ? 1 : -1;
+    var outgoing = cards[current];
+    var incoming = cards[index];
+
+    gsap.killTweensOf([outgoing, incoming]);
+
+    // Place incoming off-screen in the slide direction
+    gsap.set(incoming, {
+      x: direction * 100 + '%',
+      opacity: 1,
+      scale: 0.92,
+      filter: 'blur(8px)',
+      visibility: 'visible'
+    });
+
+    // Slide outgoing card away
+    gsap.to(outgoing, {
+      x: direction * -100 + '%',
+      opacity: 0,
+      scale: 0.88,
+      filter: 'blur(10px)',
+      duration: 0.5,
+      ease: 'power2.in',
+      onComplete: function () {
+        gsap.set(outgoing, { visibility: 'hidden', clearProps: 'x,scale,filter,opacity' });
+      }
+    });
+
+    // Slide incoming card in
+    gsap.to(incoming, {
+      x: 0,
+      scale: 1,
+      filter: 'blur(0px)',
+      duration: 0.65,
+      delay: 0.08,
+      ease: 'power3.out',
+      onComplete: function () {
+        gsap.set(incoming, { clearProps: 'x,scale,filter,opacity' });
+        current = index;
+        isAnimating = false;
+        updateDots();
+      }
+    });
+  }
+
+  var counterEl = document.getElementById('testimonialCounter');
+
+  function updateDots() {
+    dots.forEach(function (d, i) {
+      d.classList.toggle('active', i === current);
+    });
+    if (counterEl) counterEl.textContent = (current + 1) + ' / ' + total;
+  }
+
+  // Dot click handlers
+  dots.forEach(function (d) {
+    d.addEventListener('click', function () {
+      var idx = parseInt(this.dataset.index);
+      if (idx === current) return;
+      clearInterval(autoplay);
+      goTo(idx);
+      startAuto();
+    });
+  });
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function startAuto() {
+    clearInterval(autoplay);
+    autoplay = setInterval(next, 5000);
+  }
+
+  // Touch swipe detection
+  wrap.addEventListener('touchstart', function (e) {
+    startX = e.touches[0].clientX;
+    clearInterval(autoplay);
+  }, { passive: true });
+
+  wrap.addEventListener('touchend', function (e) {
+    var diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next(); else prev();
+    }
+    startAuto();
+  }, { passive: true });
+
+  // Pause on hover
+  wrap.addEventListener('mouseenter', function () {
+    clearInterval(autoplay);
+  });
   wrap.addEventListener('mouseleave', startAuto);
+
+  // Start autoplay
   startAuto();
 })();
 
@@ -737,7 +858,11 @@ function closeMobileMenu() {
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-  a.addEventListener('click', function (e) { e.preventDefault(); var t = document.querySelector(this.getAttribute('href')); if (t) lenis.scrollTo(t, { offset: -68 }); });
+  a.addEventListener('click', function (e) {
+    e.preventDefault();
+    var href = this.getAttribute('href');
+    if (href && href.length > 1) safeScrollTo(href, 68);
+  });
 });
 
 document.addEventListener('click', function (e) {
@@ -770,9 +895,10 @@ document.addEventListener('click', function (e) {
   });
 })();
 
-/* 30. GALLERY 3D TILT */
+/* 30. GALLERY 3D TILT — disabled on touch devices */
 (function () {
-  if (window.innerWidth < 768) return;
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (window.innerWidth < 768 || isTouch) return;
   document.querySelectorAll('.gallery-item').forEach(function (item) {
     item.addEventListener('mousemove', function (e) {
       var r = item.getBoundingClientRect();
