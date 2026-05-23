@@ -26,14 +26,18 @@ var lenis = null;
 var lenisEnabled = false;
 
 // Normalize ScrollTrigger touch/wheel events first (beneficial with or without Lenis)
-ScrollTrigger.normalizeScroll(true);
+ScrollTrigger.normalizeScroll({
+  allowNestedScroll: true
+});
 
 try {
   if (typeof Lenis === 'undefined') throw new Error('Lenis library not loaded');
   lenis = new Lenis({
-    duration: 1.2,
+    duration: 0.9,
     easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    lerp: 0.1,
     smoothWheel: true,
+    wheelMultiplier: 1.2,
     smoothTouch: false
   });
   lenis.on('scroll', ScrollTrigger.update);
@@ -140,35 +144,37 @@ ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom',
   var winW = window.innerWidth;
   var isMobile = winW < 768;
   var isSmall = winW < 480;
-  var symbols = ['🌸', '🪷', '🌺', '✦', '✧', '·'];
-  var active = 0, max = isSmall ? 4 : isMobile ? 8 : 25;
-  var intervalMs = isSmall ? 2500 : isMobile ? 1500 : 600;
+  var symbols = ['🌸', '🪷', '🌺', '🌼', '🌻', '✿'];
+  var active = 0, max = isSmall ? 6 : isMobile ? 12 : 30;
+  var intervalMs = isSmall ? 1800 : isMobile ? 1000 : 400;
 
   function create() {
     if (active >= max) return;
     var p = document.createElement('div'); p.className = 'particle';
-    var isOrb = Math.random() > 0.5;
-    var size = isSmall ? 5 + Math.random() * 8 : 8 + Math.random() * 16;
-    var dur = 12 + Math.random() * 18;
+    var isOrb = Math.random() > 0.7;
+    var size = isSmall ? 12 + Math.random() * 14 : isMobile ? 14 + Math.random() * 18 : 14 + Math.random() * 28;
+    var dur = 7 + Math.random() * 10;
     if (isOrb) {
       p.style.width = size + 'px'; p.style.height = size + 'px';
-      p.style.background = 'radial-gradient(circle, rgba(212,175,55,0.7), transparent 70%)';
+      p.style.background = 'radial-gradient(circle, rgba(255,107,53,0.5), rgba(212,175,55,0.3), transparent 70%)';
       p.style.borderRadius = '50%';
+      p.style.filter = 'blur(1px)';
     } else {
       p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
       p.style.fontSize = size + 'px';
+      p.style.filter = 'drop-shadow(0 2px 4px rgba(255,107,53,0.2))';
     }
     p.style.left = Math.random() * 100 + '%';
     p.style.setProperty('--p-dur', dur + 's');
-    p.style.setProperty('--p-drift', ((Math.random() - 0.5) * 100) + 'px');
-    p.style.setProperty('--p-rotate', (Math.random() * 720) + 'deg');
-    p.style.setProperty('--p-opacity', (0.4 + Math.random() * 0.4).toString());
+    p.style.setProperty('--p-drift', ((Math.random() - 0.5) * 120) + 'px');
+    p.style.setProperty('--p-rotate', (Math.random() * 540) + 'deg');
+    p.style.setProperty('--p-opacity', (0.5 + Math.random() * 0.4).toString());
     p.style.animationDuration = dur + 's';
     container.appendChild(p); active++;
     setTimeout(function () { p.remove(); active--; }, (dur + 2) * 1000);
   }
   setInterval(create, intervalMs);
-  for (var i = 0; i < 8; i++) { if (active < max) create(); }
+  for (var i = 0; i < 10; i++) { if (active < max) create(); }
 })();
 
 /* ═══════════════════════════════════════════════════════
@@ -229,7 +235,7 @@ var heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 2.2 });
   var html = titleEl.innerHTML;
   var spans = [];
   var temp = document.createElement('div'); temp.innerHTML = html;
-  var wrapper = document.createElement('div'); wrapper.style.display = 'inline';
+  var wrapper = document.createElement('div'); wrapper.style.cssText = 'display:inline-block; text-align:center;';
 
   function process(parent, container) {
     var nodes = parent.childNodes;
@@ -237,25 +243,30 @@ var heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 2.2 });
       var node = nodes[n];
       if (node.nodeType === 3) {
         var text = node.textContent;
+        // Trim leading/trailing whitespace so HTML indentation isn't rendered as visible   spans
+        text = text.trim();
+        if (text.length === 0) continue;
         for (var c = 0; c < text.length; c++) {
+          var ch = text[c];
           var span = document.createElement('span');
           span.className = 'hero-char';
-          span.textContent = text[c] === ' ' ? '\u00A0' : text[c];
+          span.textContent = ch === ' ' ? '\u00A0' : ch;
           span.style.display = 'inline-block'; span.style.opacity = '0';
           container.appendChild(span);
-          if (text[c] !== ' ') spans.push(span);
+          if (ch !== ' ') spans.push(span);
         }
       } else if (node.nodeType === 1 && node.tagName === 'EM') {
         var em = document.createElement('em');
         em.textContent = node.textContent;
         em.style.display = 'block'; em.style.opacity = '0';
+        em.style.textAlign = 'center';
         container.appendChild(em);
         spans.push(em);
       }
     }
   }
   process(temp, wrapper);
-  titleEl.innerHTML = ''; titleEl.appendChild(wrapper); titleEl.style.opacity = '1';
+  titleEl.innerHTML = ''; titleEl.appendChild(wrapper); titleEl.style.cssText = 'opacity:1; text-align:center;';
 
   spans.forEach(function (s) { gsap.set(s, { opacity: 0, y: 60, rotateX: -90, transformPerspective: 600 }); });
   heroTL.to(spans, { opacity: 1, y: 0, rotateX: 0, duration: 0.9, stagger: 0.04, ease: 'back.out(1.4)' }, 0.5);
@@ -263,15 +274,13 @@ var heroTL = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 2.2 });
 
 gsap.set('#heroImageBg', { opacity: 0, scale: 1.1 });
 gsap.set('#heroBadge', { y: 30, opacity: 0 });
-gsap.set('#heroSub', { y: 30, opacity: 0, filter: 'blur(10px)' });
 gsap.set('.hero-btns', { y: 30, scale: 0.9, opacity: 0 });
 gsap.set('#heroDivider', { scaleX: 0, opacity: 0 });
 gsap.set('#scrollIndicator', { y: 20, opacity: 0 });
 
 heroTL
-  .to('#heroImageBg', { opacity: 0.5, scale: 1, duration: 1.5, ease: 'power2.out' }, 0)
+  .to('#heroImageBg', { opacity: 0.75, scale: 1, duration: 1.8, ease: 'power2.out' }, 0)
   .to('#heroBadge', { opacity: 1, y: 0, duration: 0.8 }, 0.3)
-  .to('#heroSub', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, 1.0)
   .to('#heroDivider', { opacity: 1, scaleX: 1, duration: 0.6 }, 1.2)
   .to('.hero-btns', { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(2)' }, 1.4)
   .to('#scrollIndicator', { opacity: 1, y: 0, duration: 0.5 }, 2.0);
@@ -299,22 +308,22 @@ gsap.to('.hero-orb-2', { y: 100, scrollTrigger: { trigger: '.hero', start: 'top 
 (function () {
   var container = document.getElementById('heroPetals');
   if (!container) return;
-  var symbols = ['🌸', '🪷', '🌺', '✿'];
-  var count = window.innerWidth < 768 ? 8 : 20;
+  var symbols = ['🌸', '🪷', '🌺', '✿', '🌼'];
+  var count = window.innerWidth < 768 ? 12 : 28;
   for (var i = 0; i < count; i++) {
     var p = document.createElement('div'); p.className = 'lotus-petal';
     p.textContent = symbols[i % symbols.length];
     p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
-    p.style.fontSize = (10 + Math.random() * 14) + 'px';
+    p.style.fontSize = (20 + Math.random() * 20) + 'px';
     container.appendChild(p);
     gsap.to(p, {
-      x: 'random(-100, 100)', y: 'random(-150, -50)',
-      rotation: 'random(-180, 180)', opacity: 0,
-      duration: 'random(10, 20)', repeat: -1, delay: 'random(0, 8)', ease: 'sine.inOut',
+      x: 'random(-120, 120)', y: 'random(-180, -60)',
+      rotation: 'random(-200, 200)', opacity: 0,
+      duration: 'random(6, 14)', repeat: -1, delay: 'random(0, 5)', ease: 'sine.inOut',
       onRepeat: function () {
         this._targets[0].style.left = Math.random() * 100 + '%';
         this._targets[0].style.top = Math.random() * 100 + '%';
-        gsap.set(this._targets[0], { opacity: 0.3 + Math.random() * 0.3 });
+        gsap.set(this._targets[0], { opacity: 0.4 + Math.random() * 0.35 });
       }
     });
   }
@@ -833,10 +842,7 @@ ScrollTrigger.create({ trigger: '#rooms', start: 'top 60%',
   onEnter: function () { document.getElementById('stickyBook').classList.add('visible'); },
   onLeaveBack: function () { document.getElementById('stickyBook').classList.remove('visible'); }
 });
-ScrollTrigger.create({ trigger: '#sanctuary', start: 'top 80%',
-  onEnter: function () { document.getElementById('whatsappFloat').classList.add('visible'); },
-  onLeaveBack: function () { document.getElementById('whatsappFloat').classList.remove('visible'); }
-});
+// WhatsApp float is now always visible — no ScrollTrigger toggle needed.
 
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
@@ -910,6 +916,205 @@ document.addEventListener('click', function (e) {
   });
 })();
 
+/* ═══════════════════════════════════════════════════════
+   32. HERO QUOTE ANIMATION — Fade in after hero reveal
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  var quote = document.getElementById('heroQuote');
+  if (!quote) return;
+  gsap.set(quote, { y: 20, opacity: 0 });
+  heroTL.to(quote, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 1.6);
+})();
+
+/* ═══════════════════════════════════════════════════════
+   33. MOBILE ROOM SLIDER — Scroll-snap with autoplay & dot sync
+   Native scroll-snap handles sliding; JS syncs dots, enables
+   dot-click navigation, and auto-advances every 4s
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  var grid = document.getElementById('roomsGrid');
+  var dotsContainer = document.getElementById('roomsSliderDots');
+  if (!grid || !dotsContainer) return;
+
+  var cards = grid.querySelectorAll('.room-card');
+  if (!cards.length) return;
+
+  var current = 0;
+  var autoplayTimer = null;
+  var resumeTimer = null;
+  var userInteracted = false;
+  var isAutoScrolling = false;
+
+  function isMobile() {
+    return window.innerWidth <= 1024;
+  }
+
+  // ── Build dots ──
+  function buildDots() {
+    dotsContainer.innerHTML = '';
+    cards.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.className = 'rooms-slider-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+      dot.addEventListener('click', function () {
+        if (!isMobile()) return;
+        pauseAutoplay();
+        scrollToCard(i);
+      });
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  // ── Update active dot based on scroll position ──
+  function updateActiveDot() {
+    if (!isMobile()) return;
+    var scrollLeft = grid.scrollLeft;
+    // Find the card closest to the current scroll position
+    var newIndex = 0;
+    var minDist = Infinity;
+    cards.forEach(function (card, i) {
+      var dist = Math.abs(scrollLeft - card.offsetLeft);
+      if (dist < minDist) {
+        minDist = dist;
+        newIndex = i;
+      }
+    });
+    if (newIndex !== current) {
+      current = newIndex;
+      var dots = dotsContainer.querySelectorAll('.rooms-slider-dot');
+      dots.forEach(function (d, i) {
+        d.classList.toggle('active', i === current);
+      });
+    }
+  }
+
+  // ── Scroll to a specific card ──
+  function scrollToCard(index) {
+    if (!isMobile()) return;
+    isAutoScrolling = true;
+    var target = cards[index].offsetLeft;
+    grid.scrollTo({ left: target, behavior: 'smooth' });
+  }
+
+  // ── Autoplay: advance to next card ──
+  function nextCard() {
+    if (!isMobile() || userInteracted) return;
+    var next = (current + 1) % cards.length;
+    scrollToCard(next);
+  }
+
+  function startAutoplay() {
+    clearInterval(autoplayTimer);
+    autoplayTimer = setInterval(nextCard, 4000);
+  }
+
+  function pauseAutoplay() {
+    userInteracted = true;
+    clearInterval(autoplayTimer);
+    clearTimeout(resumeTimer);
+    // Resume autoplay after 6 seconds of inactivity
+    resumeTimer = setTimeout(function () {
+      userInteracted = false;
+      if (isMobile()) startAutoplay();
+    }, 6000);
+  }
+
+  // ── Attach scroll listener to grid ──
+  grid.addEventListener('scroll', function () {
+    if (!isMobile()) return;
+    updateActiveDot();
+    // Only pause autoplay on user-initiated scroll, not programmatic auto-scrolls
+    if (!isAutoScrolling) pauseAutoplay();
+    isAutoScrolling = false;
+  }, { passive: true });
+
+  // ── Build dots on init & start autoplay ──
+  buildDots();
+  if (isMobile()) startAutoplay();
+
+  // ── On window resize, refresh dot state ──
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    clearInterval(autoplayTimer);
+    resizeTimer = setTimeout(function () {
+      if (isMobile()) {
+        updateActiveDot();
+        startAutoplay();
+      } else {
+        clearInterval(autoplayTimer);
+      }
+    }, 200);
+  });
+
+  // Initial update after layout
+  requestAnimationFrame(function () {
+    updateActiveDot();
+  });
+})();
+
 /* INIT */
 window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 setTimeout(function () { ScrollTrigger.refresh(); }, 600);
+
+/* ═══════════════════════════════════════════════════════
+   31. RESPONSIVE RESIZE HANDLER
+   WhatsApp float position & ScrollTrigger refresh on rotate/resize
+   ═══════════════════════════════════════════════════════ */
+(function () {
+  var resizeTimer;
+  var lastWidth = window.innerWidth;
+  var lastOrientation = screen.orientation ? screen.orientation.angle : 0;
+
+  function adjustWhatsAppPosition() {
+    var stickyBar = document.getElementById('stickyBook');
+    var whatsApp = document.getElementById('whatsappFloat');
+    if (!stickyBar || !whatsApp) return;
+
+    var isSticky = stickyBar.classList.contains('visible');
+    var isMobile = window.innerWidth <= 768;
+
+    if (isSticky && isMobile) {
+      var stickyHeight = stickyBar.offsetHeight;
+      whatsApp.style.bottom = (stickyHeight + 16) + 'px';
+    } else if (isMobile) {
+      whatsApp.style.bottom = '';
+    } else {
+      whatsApp.style.bottom = '';
+    }
+  }
+
+  // Monitor sticky bar visibility changes
+  var stickyBar = document.getElementById('stickyBook');
+  if (stickyBar) {
+    var observer = new MutationObserver(function () {
+      adjustWhatsAppPosition();
+    });
+    observer.observe(stickyBar, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      var newWidth = window.innerWidth;
+      var newOrientation = screen.orientation ? screen.orientation.angle : 0;
+
+      // Refresh ScrollTrigger on significant size changes or orientation change
+      if (Math.abs(newWidth - lastWidth) > 50 || newOrientation !== lastOrientation) {
+        ScrollTrigger.refresh();
+        lastWidth = newWidth;
+        lastOrientation = newOrientation;
+      }
+
+      adjustWhatsAppPosition();
+    }, 250);
+  });
+
+  // Also handle orientation change explicitly
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () {
+      ScrollTrigger.refresh();
+      adjustWhatsAppPosition();
+    }, 500);
+  });
+})();

@@ -74,7 +74,9 @@
      ════════════════════════════════════════════════ -->
 <nav id="navbar">
   <a class="nav-logo" href="#">
-    <div class="nav-logo-icon">🛕</div>
+    <div class="nav-logo-icon">
+      <img src="images/logo.png" alt="Morya Lodging" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
     <div class="nav-logo-text">
       Morya
       <small>Lodging · Admapur</small>
@@ -162,14 +164,16 @@
       <em>Where Every Pilgrim Finds Peace</em>
     </h1>
 
-    <p class="hero-sub" id="heroSub">
-      Steps from the sacred Samadhi of Sant Balumama — a sanctuary of warmth, faith, and rest for every traveller.
-    </p>
 
     <div class="hero-divider" id="heroDivider">
       <span class="hero-divider-line"></span>
       <span class="hero-divider-icon">🔔</span>
       <span class="hero-divider-line"></span>
+    </div>
+
+    <div class="hero-quote" id="heroQuote">
+      <span class="hero-quote-icon">🪷</span>
+      <p class="hero-quote-text">"A sanctuary of warmth, faith, and rest —<br>Jay Balumama 🙏"</p>
     </div>
 
     <div class="hero-btns" id="heroBtns">
@@ -202,7 +206,7 @@
   <div class="sanctuary-inner">
     <div class="section-header">
       <div class="section-eyebrow">Morya Lodging · मोरया लॉजिंग</div>
-      <h2 class="section-title">Your Sanctuary in Admapur</h2>
+      <h2 class="section-title" style="font-size: 31px;">Your Sanctuary in Admapur</h2>
       <p class="section-sub">Where tradition meets comfort, and every guest is welcomed with warmth and grace.</p>
     </div>
 
@@ -254,6 +258,8 @@
       </button>
     </div>
 
+    <div class="rooms-grid-swipe-hint" id="roomsGridHint"><span>←</span> Swipe to explore <span>→</span></div>
+    <div class="rooms-slider-wrap" id="roomsSliderWrap">
     <div class="rooms-grid" id="roomsGrid">
       <!-- AC Room -->
       <div class="room-card" data-room="ac" data-room-name="AC Comfort Room" data-room-interior="images/ac-room-interior.png">
@@ -357,6 +363,7 @@
         <div class="room-card-glow"></div>
       </div>
     </div>
+    <div class="rooms-slider-dots" id="roomsSliderDots"></div>
   </div>
 </section>
 
@@ -557,7 +564,7 @@
 <!-- ════════════════════════════════════════════════
      GALLERY
      ════════════════════════════════════════════════ -->
-<section class="gallery-section" id="gallery">
+<!-- <section class="gallery-section" id="gallery">
   <div class="gallery-inner">
     <div class="section-header">
       <div class="section-eyebrow">Gallery · छायाचित्रे</div>
@@ -608,10 +615,10 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- SECTION DIVIDER -->
-<div class="section-divider"><span>🪔</span></div>
+<!-- <div class="section-divider"><span>🪔</span></div> -->
 
 <!-- ════════════════════════════════════════════════
      LOCATION
@@ -620,13 +627,21 @@
   <div class="location-inner">
     <div class="section-header">
       <div class="section-eyebrow">Location · स्थान</div>
-      <h2 class="section-title">Sacred Places Nearby</h2>
+      <h2 class="section-title" style="font-size: 25px;">Sacred Places Nearby</h2>
       <p class="section-sub">From the divine presence of Balumama to the ancient temples of Kolhapur — explore the spiritual heart of Maharashtra.</p>
     </div>
 
     <div class="location-grid">
       <div class="location-map-frame">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61128.85458955346!2d74.15931077832032!3d16.698005537843778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc1a6f2cbe8f5c7%3A0x9b6b8f5c3e2b0a1!2sAdmapur%2C+Maharashtra!5e0!3m2!1sen!2sin!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of Admapur, Kolhapur"></iframe>
+        <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61128.85458955346!2d74.15931077832032!3d16.698005537843778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc1a6f2cbe8f5c7%3A0x9b6b8f5c3e2b0a1!2sAdmapur%2C+Maharashtra!5e0!3m2!1sen!2sin!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of Admapur, Kolhapur"></iframe> -->
+        <iframe 
+        src="https://www.google.com/maps?q=16.8296,74.5430&hl=en&z=15&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+        title="Morya Lodging Location">
+    </iframe>
+
       </div>
       <div class="location-info">
         <h3>Find Us</h3>
@@ -721,7 +736,7 @@
      ════════════════════════════════════════════════ -->
 <a class="whatsapp-float" id="whatsappFloat" href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener" aria-label="Contact on WhatsApp">
   <span class="whatsapp-float-pulse"></span>
-  💬
+  <img src="images/whatsapp.png" alt="WhatsApp" style="width:70%;height:70%;object-fit:contain;display:block;">
 </a>
 
 <!-- ════════════════════════════════════════════════
