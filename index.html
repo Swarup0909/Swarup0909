@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Morya Lodging — Sacred Luxury Retreat · Admapur, Kolhapur</title>
+<meta name="description" content="Morya Lodging near Shri Balumama Mandir, Admapur, Kolhapur — A sacred luxury retreat for pilgrims and travellers. AC Rooms, Non-AC Rooms, Dormitory. Immersive 3D experience.">
+<meta property="og:title" content="Morya Lodging — Sacred Luxury Retreat · Admapur, Kolhapur">
+<meta property="og:description" content="Near Shri Balumama Mandir, Admapur — AC Rooms, Non-AC Rooms & Dormitory. Book your peaceful stay today.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF8E7">
+
+<!-- Preconnect & Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<!-- Stylesheet -->
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOADING SCREEN
+     ══════════════════════════════════════════ -->
+<div class="loader" id="loader">
+  <div class="loader-inner">
+    <div class="loader-icon">🛕</div>
+    <div class="loader-text">Morya Lodging</div>
+    <div class="loader-sub">Preparing your experience…</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AMBIENT BACKGROUNDS
+     ══════════════════════════════════════════ -->
+<!-- Shader Lines -->
+<div class="shader-lines" id="shaderLines"></div>
+
+<!-- Circle Animator -->
+<div class="circle-animator" id="circleAnimator"></div>
+
+<!-- Particle Container -->
+<div class="particle-container" id="particleContainer"></div>
+
+<!-- ── Custom Cursor ── -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-trail" id="cursorTrail">
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+  <div class="trail-dot"></div>
+</div>
+
+<!-- ── Scroll Progress ── -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ── Diya Decorations ── -->
+<div class="diya-wrap tl"><span class="diya-flame">🔥</span><span class="diya-body">🪔</span><div class="diya-glow"></div></div>
+<div class="diya-wrap tr"><span class="diya-flame">🔥</span><span class="diya-body">🪔</span><div class="diya-glow"></div></div>
+
+<!-- ════════════════════════════════════════════════
+     NAV
+     ════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">🛕</div>
+    <div class="nav-logo-text">
+      Morya
+      <small>Lodging · Admapur</small>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sanctuary">Stay</a></li>
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#testimonials">Guests</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#location">Location</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <button class="nav-cta" onclick="openModal()">☎ Book Now</button>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sanctuary" onclick="closeMobileMenu()">Stay</a>
+  <a href="#rooms" onclick="closeMobileMenu()">Rooms</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Testimonials</a>
+  <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#location" onclick="closeMobileMenu()">Location</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <button class="nav-cta" onclick="openModal(); closeMobileMenu();">☎ Book Now</button>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-image-bg" id="heroImageBg">
+    <img src="images/hero-temple.png" alt="Morya Lodging & Temple" class="hero-image-bg-img">
+    <div class="hero-image-overlay"></div>
+  </div>
+  <div class="hero-pattern"></div>
+
+  <!-- Gradient Orbs -->
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <!-- Lotus Petals -->
+  <div class="hero-petals" id="heroPetals"></div>
+
+  <!-- Mandala -->
+  <svg class="mandala-bg" viewBox="0 0 800 800" fill="none">
+    <circle cx="400" cy="400" r="380" stroke-width="0.7"/>
+    <circle cx="400" cy="400" r="320" stroke-width="0.4"/>
+    <circle cx="400" cy="400" r="250" stroke-width="0.7"/>
+    <circle cx="400" cy="400" r="180" stroke-width="0.4"/>
+    <circle cx="400" cy="400" r="110" stroke-width="0.7"/>
+    <circle cx="400" cy="400" r="50" stroke-width="0.4"/>
+    <g stroke-width="0.4" opacity="0.5">
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(30 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(60 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(90 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(120 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(150 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(180 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(210 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(240 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(270 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(300 400 400)"/>
+      <ellipse cx="400" cy="230" rx="12" ry="48" fill="rgba(255,107,53,0.04)" transform="rotate(330 400 400)"/>
+    </g>
+    <polygon points="400,60 460,200 600,180 520,300 650,400 520,500 600,620 460,600 400,740 340,600 200,620 280,500 150,400 280,300 200,180 340,200" fill="none" stroke-width="0.3"/>
+    <line x1="30" y1="400" x2="770" y2="400" stroke-width="0.3"/>
+    <line x1="400" y1="30" x2="400" y2="770" stroke-width="0.3"/>
+  </svg>
+
+  <div class="hero-inner" id="heroContent">
+    <div class="hero-badge" id="heroBadge">
+      <span class="hero-badge-dot"></span>
+      Shri Balumama Mandir · Admapur, Kolhapur
+    </div>
+
+    <h1 class="hero-title-line" id="heroTitle">
+      Morya Lodging
+      <em>Where Every Pilgrim Finds Peace</em>
+    </h1>
+
+    <p class="hero-sub" id="heroSub">
+      Steps from the sacred Samadhi of Sant Balumama — a sanctuary of warmth, faith, and rest for every traveller.
+    </p>
+
+    <div class="hero-divider" id="heroDivider">
+      <span class="hero-divider-line"></span>
+      <span class="hero-divider-icon">🔔</span>
+      <span class="hero-divider-line"></span>
+    </div>
+
+    <div class="hero-btns" id="heroBtns">
+      <button class="btn-primary" onclick="openModal()">
+        <span class="circle-hover-container"></span>
+        ☎ Call Now · Book Your Stay
+      </button>
+      <button class="btn-outline" onclick="lenis.scrollTo(document.getElementById('rooms'), { offset: -68 })">
+        <span class="circle-hover-container"></span>
+        ✦ Enter Experience
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" id="scrollIndicator">
+    <span class="scroll-text">Discover</span>
+    <div class="scroll-line-wrap"><div class="scroll-line-inner"></div></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     SECTION DIVIDER
+     ════════════════════════════════════════════════ -->
+<div class="section-divider"><span>🪔</span></div>
+
+<!-- ════════════════════════════════════════════════
+     PILGRIM'S ROUTE / JOURNEY
+     ════════════════════════════════════════════════ -->
+<section class="journey-section" id="journey">
+  <div class="journey-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Pilgrim's Route · पालखी यात्रा</div>
+      <h2 class="section-title">Your Sacred Journey</h2>
+      <p class="section-sub">From Kolhapur's grand temples to the peaceful grace of Balumama — a pilgrimage through faith and history.</p>
+    </div>
+
+    <div class="journey-map-container">
+      <div class="journey-line-track"></div>
+      <div class="journey-line-progress" id="journeyProgress"></div>
+
+      <div class="journey-stops" id="journeyStops">
+        <div class="journey-stop" data-delay="0">
+          <div class="journey-stop-dot"><span>🚂</span></div>
+          <span class="journey-stop-name">Kolhapur Stn</span>
+          <span class="journey-stop-dist">Start</span>
+        </div>
+        <div class="journey-stop" data-delay="0.15">
+          <div class="journey-stop-dot"><span>🏛️</span></div>
+          <span class="journey-stop-name">Mahalaxmi Temple</span>
+          <span class="journey-stop-dist">Kolhapur</span>
+        </div>
+        <div class="journey-stop" data-delay="0.3">
+          <div class="journey-stop-dot"><span>🏯</span></div>
+          <span class="journey-stop-name">Panhala Fort</span>
+          <span class="journey-stop-dist">~55 km</span>
+        </div>
+        <div class="journey-stop" data-delay="0.45">
+          <div class="journey-stop-dot is-active"><span>⛩️</span></div>
+          <span class="journey-stop-name">Jyotiba Temple</span>
+          <span class="journey-stop-dist">~75 km</span>
+        </div>
+        <div class="journey-stop" data-delay="0.6">
+          <div class="journey-stop-dot is-active"><span>🛕</span></div>
+          <span class="journey-stop-name">Balumama Mandir</span>
+          <span class="journey-stop-dist">Admapur</span>
+        </div>
+        <div class="journey-stop" data-delay="0.75">
+          <div class="journey-stop-dot is-active"><span>🏨</span></div>
+          <span class="journey-stop-name">Morya Lodging</span>
+          <span class="journey-stop-dist">Your Stay 🙏</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     SANCTUARY / ABOUT LODGING
+     ════════════════════════════════════════════════ -->
+<section class="sanctuary-section" id="sanctuary">
+  <div class="sanctuary-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Morya Lodging · मोरया लॉजिंग</div>
+      <h2 class="section-title">Your Sanctuary in Admapur</h2>
+      <p class="section-sub">Where tradition meets comfort, and every guest is welcomed with warmth and grace.</p>
+    </div>
+
+    <div class="sanctuary-grid">
+      <div class="sanctuary-image-wrap">
+        <div class="sanctuary-image-frame">
+          <picture>
+            <source srcset="images/main-building.webp" type="image/webp">
+            <source srcset="images/main-building.jpg" type="image/jpeg">
+            <img src="images/main-building.jpg" alt="Morya Lodging - Main Building" class="sanctuary-image" loading="lazy">
+          </picture>
+        </div>
+        <div class="sanctuary-image-accent">
+          <span>Walk to<br>Mandir<br>🛕</span>
+        </div>
+      </div>
+      <div class="sanctuary-content">
+        <h2>Welcome Home, Pilgrim</h2>
+        <p>Nestled in the heart of Admapur, Kolhapur, Morya Lodging offers you a warm and comfortable stay steps from the revered Shri Balumama Mandir. Our property combines traditional charm with modern amenities — ensuring every guest feels blessed and well-rested.</p>
+        <p>With spacious grounds, clean rooms, and round-the-clock hospitality, we welcome pilgrims, families, and travellers to experience the peace of this sacred land.</p>
+
+        <div class="sanctuary-features">
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">🅿</span>Ample Parking</div>
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">🌿</span>Garden Area</div>
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">🕯</span>24/7 Reception</div>
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">🧹</span>Clean &amp; Hygienic</div>
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">🚶</span>Near Mandir</div>
+          <div class="sanctuary-feature"><span class="sanctuary-feature-icon">👨‍👩‍👧</span>Family Friendly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     STATS BANNER
+     ════════════════════════════════════════════════ -->
+<section class="stats-banner">
+  <div class="stats-inner">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-number" data-count="3">0</div>
+        <div class="stat-label">Room Types</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="24">24/7</div>
+        <div class="stat-label">Service</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="5">0</div>
+        <div class="stat-label">Min to Mandir</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="100">0</div>
+        <div class="stat-label">Happy Pilgrims+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🌼</span></div>
+
+<!-- ════════════════════════════════════════════════
+     AMENITIES
+     ════════════════════════════════════════════════ -->
+<section class="amenities-section" id="amenities">
+  <div class="amenities-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Amenities · सुविधा</div>
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-sub">Thoughtful comforts designed to make your pilgrimage feel like a retreat.</p>
+    </div>
+
+    <div class="amenities-grid" id="amenitiesGrid">
+      <div class="amenity-card">
+        <span class="amenity-icon">📶</span>
+        <h3 class="amenity-name">Free WiFi</h3>
+        <p class="amenity-desc">Stay connected with high-speed internet throughout the property.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🅿️</span>
+        <h3 class="amenity-name">Parking</h3>
+        <p class="amenity-desc">Secure, ample parking for cars and two-wheelers.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🕯️</span>
+        <h3 class="amenity-name">24/7 Reception</h3>
+        <p class="amenity-desc">Round-the-clock assistance for check-ins, queries, and comfort.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🧹</span>
+        <h3 class="amenity-name">Clean Rooms</h3>
+        <p class="amenity-desc">Immaculately maintained rooms with daily housekeeping.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🚿</span>
+        <h3 class="amenity-name">Hot Water</h3>
+        <p class="amenity-desc">Available 24/7 in all rooms and bathrooms.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🛕</span>
+        <h3 class="amenity-name">Temple Proximity</h3>
+        <p class="amenity-desc">Just a short walk to Shri Balumama Mandir for darshan.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🔒</span>
+        <h3 class="amenity-name">Security</h3>
+        <p class="amenity-desc">Safe and secure premises for a worry-free stay.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🧘</span>
+        <h3 class="amenity-name">Peaceful Environment</h3>
+        <p class="amenity-desc">Quiet, serene atmosphere perfect for spiritual rejuvenation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🌸</span></div>
+
+<!-- ════════════════════════════════════════════════
+     ROOMS — 3D Interactive Cards
+     ════════════════════════════════════════════════ -->
+<section class="rooms-section" id="rooms">
+  <div class="rooms-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Our Rooms · आमचे कक्ष</div>
+      <h2 class="section-title">Choose Your Rest</h2>
+      <p class="section-sub">Three thoughtfully designed options — whether you seek premium comfort, simple rest, or budget-friendly shelter.</p>
+      <button class="spread-toggle" id="spreadToggle">
+        <span class="spread-toggle-icon">⊞</span> View All
+      </button>
+    </div>
+
+    <div class="rooms-grid" id="roomsGrid">
+      <!-- AC Room -->
+      <div class="room-card" data-room="ac" data-room-name="AC Comfort Room" data-room-interior="images/ac-room-interior.png">
+        <div class="room-card-image">
+          <picture>
+            <source srcset="images/ac-room.webp" type="image/webp">
+            <source srcset="images/ac-room.jpg" type="image/jpeg">
+            <img src="images/ac-room.jpg" alt="AC Room - Premium Comfort" loading="lazy">
+          </picture>
+          <div class="room-card-overlay"></div>
+          <span class="room-card-badge">❄️ Premium</span>
+          <div class="room-card-price">
+            <span class="price-amount">₹2,500</span>
+            <span class="price-label">per night</span>
+          </div>
+        </div>
+        <div class="room-card-body">
+          <span class="room-card-icon">❄️</span>
+          <h3 class="room-card-name">AC Room</h3>
+          <p class="room-card-desc">Cool, spacious, and thoughtfully appointed — our air-conditioned rooms offer a premium retreat after a blessed day of pilgrimage.</p>
+          <ul class="room-card-features">
+            <li>Air Conditioning</li>
+            <li>Attached Bathroom</li>
+            <li>Hot Water 24/7</li>
+            <li>Comfortable Beds</li>
+            <li>Clean Linen Daily</li>
+          </ul>
+          <button class="room-card-btn enter-room-btn" data-room="ac">
+            <span class="circle-hover-container"></span>
+            🚪 Enter Room →
+          </button>
+        </div>
+        <div class="room-card-glow"></div>
+      </div>
+
+      <!-- Non-AC Room -->
+      <div class="room-card" data-room="nonac" data-room-name="Traditional Comfort Room" data-room-interior="images/nonac-room-interior.png">
+        <div class="room-card-image">
+          <picture>
+            <source srcset="images/non-ac-room.webp" type="image/webp">
+            <source srcset="images/non-ac-room.jpg" type="image/jpeg">
+            <img src="images/non-ac-room.jpg" alt="Non-AC Room - Simple Comfort" loading="lazy">
+          </picture>
+          <div class="room-card-overlay"></div>
+          <span class="room-card-badge">🛏️ Standard</span>
+          <div class="room-card-price">
+            <span class="price-amount">₹1,500</span>
+            <span class="price-label">per night</span>
+          </div>
+        </div>
+        <div class="room-card-body">
+          <span class="room-card-icon">🛏️</span>
+          <h3 class="room-card-name">Non-AC Room</h3>
+          <p class="room-card-desc">Simple, clean, and honest — ideal for pilgrims seeking comfortable and affordable shelter steps from the mandir.</p>
+          <ul class="room-card-features">
+            <li>Ceiling Fan</li>
+            <li>Attached Bathroom</li>
+            <li>Hot Water</li>
+            <li>Clean Linen</li>
+            <li>Peaceful Atmosphere</li>
+          </ul>
+          <button class="room-card-btn enter-room-btn" data-room="nonac">
+            <span class="circle-hover-container"></span>
+            🚪 Enter Room →
+          </button>
+        </div>
+        <div class="room-card-glow"></div>
+      </div>
+
+      <!-- Dormitory -->
+      <div class="room-card" data-room="dorm" data-room-name="Shared Dormitory" data-room-interior="images/dormitory-interior.png">
+        <div class="room-card-image">
+          <picture>
+            <source srcset="images/dormitory.webp" type="image/webp">
+            <source srcset="images/dormitory.jpg" type="image/jpeg">
+            <img src="images/dormitory.jpg" alt="Dormitory - Budget Friendly" loading="lazy">
+          </picture>
+          <div class="room-card-overlay"></div>
+          <span class="room-card-badge">🛖 Budget</span>
+          <div class="room-card-price">
+            <span class="price-amount">₹500</span>
+            <span class="price-label">per night</span>
+          </div>
+        </div>
+        <div class="room-card-body">
+          <span class="room-card-icon">🛖</span>
+          <h3 class="room-card-name">Dormitory</h3>
+          <p class="room-card-desc">Perfect for groups of devotees and budget travellers — safe, clean, and welcoming. Affordable rates for all pilgrims.</p>
+          <ul class="room-card-features">
+            <li>Bunk / Single Beds</li>
+            <li>Common Bathroom</li>
+            <li>Safe Storage</li>
+            <li>Group Discounts</li>
+            <li>24/7 Reception</li>
+          </ul>
+          <button class="room-card-btn enter-room-btn" data-room="dorm">
+            <span class="circle-hover-container"></span>
+            🚪 Enter Room →
+          </button>
+        </div>
+        <div class="room-card-glow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🙏</span></div>
+
+<!-- ════════════════════════════════════════════════
+     TESTIMONIALS
+     ════════════════════════════════════════════════ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="testimonials-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Testimonials · प्रतिक्रिया</div>
+      <h2 class="section-title">What Pilgrims Say</h2>
+      <p class="section-sub">Hear from those who found peace and comfort under our roof.</p>
+    </div>
+
+    <div class="testimonials-track-wrap">
+      <div class="testimonials-track" id="testimonialsTrack">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">A true sanctuary for the soul. The proximity to Balumama Mandir made our pilgrimage effortless. The rooms were spotless and the hospitality was heartfelt. We will return.</p>
+          <div class="testimonial-author">— Anjali Deshmukh</div>
+          <div class="testimonial-role">Pilgrim, Pune · March 2025</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">Simple, clean, and peaceful. Exactly what a pilgrim needs. The staff treated us like family. The walk to the temple in the morning mist was unforgettable.</p>
+          <div class="testimonial-author">— Rajesh Patil</div>
+          <div class="testimonial-role">Devotee, Mumbai · January 2025</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">We stayed in the dormitory with a group of 12 devotees. Clean, safe, and incredibly affordable. The caretaker went out of his way to help us. Jay Balumama!</p>
+          <div class="testimonial-author">— Santosh Kulkarni</div>
+          <div class="testimonial-role">Group Pilgrim Leader, Solapur · Feb 2025</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">The AC room was a blessing after a long journey. Hot water, comfortable bed, and the temple bells in the distance — perfect. Highly recommend for families.</p>
+          <div class="testimonial-author">— Priya Jadhav</div>
+          <div class="testimonial-role">Traveller, Nagpur · April 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-nav" id="testimonialNav">
+      <button class="testimonial-dot active" data-index="0" aria-label="Slide 1"></button>
+      <button class="testimonial-dot" data-index="1" aria-label="Slide 2"></button>
+      <button class="testimonial-dot" data-index="2" aria-label="Slide 3"></button>
+      <button class="testimonial-dot" data-index="3" aria-label="Slide 4"></button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🌺</span></div>
+
+<!-- ════════════════════════════════════════════════
+     GALLERY
+     ════════════════════════════════════════════════ -->
+<section class="gallery-section" id="gallery">
+  <div class="gallery-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Gallery · छायाचित्रे</div>
+      <h2 class="section-title">Moments of Peace</h2>
+      <p class="section-sub">A visual journey through the sacred landscapes, temple rituals, and quiet beauty of Admapur.</p>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-item" data-label="Aarti at Balumama Mandir" role="button" tabindex="0">
+        <picture>
+          <source srcset="images/gallery-1.webp" type="image/webp">
+          <source srcset="images/gallery-1.jpg" type="image/jpeg">
+          <img src="images/gallery-1.jpg" alt="Aarti at Balumama Mandir" class="gallery-item-img" loading="lazy">
+        </picture>
+        <div class="gallery-item-overlay"><span class="gallery-item-label">Aarti · आरती</span></div>
+      </div>
+      <div class="gallery-item" data-label="Temple Courtyard" role="button" tabindex="0">
+        <picture>
+          <source srcset="images/gallery-2.webp" type="image/webp">
+          <source srcset="images/gallery-2.jpg" type="image/jpeg">
+          <img src="images/gallery-2.jpg" alt="Temple Courtyard" class="gallery-item-img" loading="lazy">
+        </picture>
+        <div class="gallery-item-overlay"><span class="gallery-item-label">Courtyard · प्रांगण</span></div>
+      </div>
+      <div class="gallery-item" data-label="Marigold Festival" role="button" tabindex="0">
+        <picture>
+          <source srcset="images/gallery-3.webp" type="image/webp">
+          <source srcset="images/gallery-3.jpg" type="image/jpeg">
+          <img src="images/gallery-3.jpg" alt="Marigold Festival" class="gallery-item-img" loading="lazy">
+        </picture>
+        <div class="gallery-item-overlay"><span class="gallery-item-label">Festival · उत्सव</span></div>
+      </div>
+      <div class="gallery-item" data-label="Sahyadri Hills" role="button" tabindex="0">
+        <picture>
+          <source srcset="images/gallery-4.webp" type="image/webp">
+          <source srcset="images/gallery-4.jpg" type="image/jpeg">
+          <img src="images/gallery-4.jpg" alt="Sahyadri Hills" class="gallery-item-img" loading="lazy">
+        </picture>
+        <div class="gallery-item-overlay"><span class="gallery-item-label">Sahyadri · सह्याद्री</span></div>
+      </div>
+      <div class="gallery-item" data-label="Lodging Exterior" role="button" tabindex="0">
+        <picture>
+          <source srcset="images/gallery-5.webp" type="image/webp">
+          <source srcset="images/gallery-5.jpg" type="image/jpeg">
+          <img src="images/gallery-5.jpg" alt="Morya Lodging" class="gallery-item-img" loading="lazy">
+        </picture>
+        <div class="gallery-item-overlay"><span class="gallery-item-label">Lodging · निवास</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🪔</span></div>
+
+<!-- ════════════════════════════════════════════════
+     LOCATION
+     ════════════════════════════════════════════════ -->
+<section class="location-section" id="location">
+  <div class="location-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Location · स्थान</div>
+      <h2 class="section-title">Sacred Places Nearby</h2>
+      <p class="section-sub">From the divine presence of Balumama to the ancient temples of Kolhapur — explore the spiritual heart of Maharashtra.</p>
+    </div>
+
+    <div class="location-grid">
+      <div class="location-map-frame">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61128.85458955346!2d74.15931077832032!3d16.698005537843778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc1a6f2cbe8f5c7%3A0x9b6b8f5c3e2b0a1!2sAdmapur%2C+Maharashtra!5e0!3m2!1sen!2sin!4v1" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of Admapur, Kolhapur"></iframe>
+      </div>
+      <div class="location-info">
+        <h3>Find Us</h3>
+        <p><strong>Morya Lodging</strong><br>Near Shri Balumama Mandir, Admapur, Kolhapur, Maharashtra</p>
+
+        <div class="location-highlight">
+          <span class="location-highlight-icon">🛕</span>
+          <div class="location-highlight-text">
+            <strong>Shri Balumama Mandir</strong> — just <strong>5 minutes walk</strong> from Morya Lodging. Morning and evening aarti welcome all devotees.
+          </div>
+        </div>
+
+        <p>Located in the serene village of Admapur, our lodging offers easy access to Kolhapur's most revered spiritual sites, historic forts, and natural beauty.</p>
+
+        <div class="location-nearby">
+          <span class="location-nearby-tag">Mahalaxmi Temple · 40 km</span>
+          <span class="location-nearby-tag">Panhala Fort · 55 km</span>
+          <span class="location-nearby-tag">Jyotiba Temple · 75 km</span>
+          <span class="location-nearby-tag">Margudevi Mandir</span>
+          <span class="location-nearby-tag">Kolhapur City · 40 km</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🙏</span></div>
+
+<!-- ════════════════════════════════════════════════
+     CONTACT
+     ════════════════════════════════════════════════ -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <span class="contact-diya">🪔</span>
+    <div class="section-eyebrow" style="justify-content:center;">Contact · संपर्क साधा</div>
+    <h2 class="section-title" style="color:var(--maroon);font-size:clamp(30px,4.5vw,46px);">Ready to Visit?</h2>
+    <p class="contact-sub">Call us to check availability and book your stay. We are open 24/7 for all pilgrims and guests. <strong>Jay Balumama.</strong></p>
+    <div class="contact-btns">
+      <button class="contact-btn-primary" onclick="openModal()">
+        <span class="circle-hover-container"></span>
+        ☎ &nbsp;Call Now to Book
+      </button>
+      <button class="contact-btn-secondary" onclick="openWhatsApp()">
+        <span class="circle-hover-container"></span>
+        💬 &nbsp;WhatsApp Us
+      </button>
+    </div>
+    <div class="contact-address">
+      <p>
+        <strong>Morya Lodging</strong><br>
+        Admapur, Kolhapur, Maharashtra<br>
+        Near Shri Balumama Mandir<br>
+        Open <strong>24 / 7</strong> for Pilgrims &amp; Guests
+      </p>
+    </div>
+  </div>
+
+  <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;opacity:.025;pointer-events:none;" viewBox="0 0 600 600" fill="none">
+    <circle cx="300" cy="300" r="280" stroke="#D4AF37" stroke-width=".8"/>
+    <circle cx="300" cy="300" r="220" stroke="#FF6B35" stroke-width=".8"/>
+    <circle cx="300" cy="300" r="160" stroke="#D4AF37" stroke-width=".8"/>
+    <circle cx="300" cy="300" r="100" stroke="#FF6B35" stroke-width=".8"/>
+    <circle cx="300" cy="300" r="50" stroke="#D4AF37" stroke-width=".8"/>
+    <line x1="20" y1="300" x2="580" y2="300" stroke="#D4AF37" stroke-width=".4"/>
+    <line x1="300" y1="20" x2="300" y2="580" stroke="#D4AF37" stroke-width=".4"/>
+    <line x1="102" y1="102" x2="498" y2="498" stroke="#D4AF37" stroke-width=".4"/>
+    <line x1="498" y1="102" x2="102" y2="498" stroke="#D4AF37" stroke-width=".4"/>
+  </svg>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════ -->
+<footer>
+  <span class="footer-symbol">🪔</span>
+  <span class="footer-name">Morya Lodging</span>
+  <div class="footer-divider"></div>
+  <div>Admapur, Kolhapur · Near Shri Balumama Mandir</div>
+  <div style="margin-top:8px;"><a href="tel:+91XXXXXXXXXX">📞 +91 XXXXX XXXXX</a></div>
+  <div class="footer-social">
+    <a href="#" class="footer-social-link" aria-label="Facebook">📘</a>
+    <a href="#" class="footer-social-link" aria-label="Instagram">📷</a>
+    <a href="#" class="footer-social-link" aria-label="YouTube">📺</a>
+    <a href="https://wa.me/91XXXXXXXXXX" class="footer-social-link footer-social-whatsapp" aria-label="WhatsApp">💬</a>
+  </div>
+  <div style="margin-top:14px;letter-spacing:.06em;opacity:.6;">© 2025 Morya Lodging · Jay Balumama 🙏</div>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     FLOATING WHATSAPP BUTTON
+     ════════════════════════════════════════════════ -->
+<a class="whatsapp-float" id="whatsappFloat" href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener" aria-label="Contact on WhatsApp">
+  <span class="whatsapp-float-pulse"></span>
+  💬
+</a>
+
+<!-- ════════════════════════════════════════════════
+     STICKY BOOKING BAR
+     ════════════════════════════════════════════════ -->
+<div class="sticky-book" id="stickyBook">
+  <span class="sticky-book-text">🛕 Morya Lodging — Book Your Stay</span>
+  <div class="sticky-book-btns">
+    <button class="sticky-book-btn secondary" onclick="openWhatsApp()">💬 WhatsApp</button>
+    <button class="sticky-book-btn primary" onclick="openModal()">☎ Call Now</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BOOKING MODAL
+     ════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal">✕</button>
+    <span class="modal-icon">🪔</span>
+    <div class="modal-eyebrow">Book Your Stay · आपले स्वागत आहे</div>
+    <div class="modal-title">Morya Lodging, Admapur</div>
+    <div class="modal-number">+91 XXXXX XXXXX</div>
+    <div class="modal-hint">Tap a button below to connect with us</div>
+    <a href="tel:+91XXXXXXXXXX" class="modal-call-btn">📞 &nbsp;Tap to Call</a>
+    <a href="https://wa.me/91XXXXXXXXXX" class="modal-whatsapp-btn">💬 &nbsp;Message on WhatsApp</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     LIGHTBOX
+     ════════════════════════════════════════════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-content">
+    <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Close gallery">✕</button>
+    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous image">‹</button>
+    <img id="lightboxImg" src="" alt="Gallery Image">
+    <button class="lightbox-next" id="lightboxNext" aria-label="Next image">›</button>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+  </div>
+</div>
+
+<!-- Main Script -->
+<script src="js/main.js"></script>
+</body>
+</html>
