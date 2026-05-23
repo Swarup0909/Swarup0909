@@ -1,2 +1,6 @@
-
+# Ignore the zip file containing the Morya Lodging project
 Morya_Lodging.zip
+*.mkv
+*.7z
+*.zip
+*.mp4

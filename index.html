@@ -12,15 +12,21 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFF8E7">
 
+<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="apple-touch-icon" href="images/logo.png">
+
 <!-- Preconnect & Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+
+
 <!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/split-type@0.3.4"></script>
 
 <!-- Stylesheet -->
 <link rel="stylesheet" href="css/styles.css">
@@ -32,7 +38,10 @@
      ══════════════════════════════════════════ -->
 <div class="loader" id="loader">
   <div class="loader-inner">
-    <div class="loader-icon">🛕</div>
+   
+    <div class="loader-image">
+      <img src="images/logo.png" alt="Morya Lodging Loading" class="loader-image-img">
+    </div>
     <div class="loader-text">Morya Lodging</div>
     <div class="loader-sub">Preparing your experience…</div>
     <div class="loader-bar"><div class="loader-bar-fill"></div></div>
@@ -51,19 +60,7 @@
 <!-- Particle Container -->
 <div class="particle-container" id="particleContainer"></div>
 
-<!-- ── Custom Cursor ── -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-<div class="cursor-trail" id="cursorTrail">
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-  <div class="trail-dot"></div>
-</div>
+
 
 <!-- ── Scroll Progress ── -->
 <div class="scroll-progress" id="scrollProgress"></div>
@@ -114,7 +111,7 @@
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
   <div class="hero-image-bg" id="heroImageBg">
-    <img src="images/hero-temple.png" alt="Morya Lodging & Temple" class="hero-image-bg-img">
+    <img src="images/balumama_1.png" alt="Morya Lodging & Temple" class="hero-image-bg-img">
     <div class="hero-image-overlay"></div>
   </div>
   <div class="hero-pattern"></div>
@@ -180,7 +177,7 @@
         <span class="circle-hover-container"></span>
         ☎ Call Now · Book Your Stay
       </button>
-      <button class="btn-outline" onclick="lenis.scrollTo(document.getElementById('rooms'), { offset: -68 })">
+      <button class="btn-outline" onclick="safeScrollTo('#rooms', 68)">
         <span class="circle-hover-container"></span>
         ✦ Enter Experience
       </button>
@@ -199,57 +196,6 @@
 <div class="section-divider"><span>🪔</span></div>
 
 <!-- ════════════════════════════════════════════════
-     PILGRIM'S ROUTE / JOURNEY
-     ════════════════════════════════════════════════ -->
-<section class="journey-section" id="journey">
-  <div class="journey-inner">
-    <div class="section-header">
-      <div class="section-eyebrow">Pilgrim's Route · पालखी यात्रा</div>
-      <h2 class="section-title">Your Sacred Journey</h2>
-      <p class="section-sub">From Kolhapur's grand temples to the peaceful grace of Balumama — a pilgrimage through faith and history.</p>
-    </div>
-
-    <div class="journey-map-container">
-      <div class="journey-line-track"></div>
-      <div class="journey-line-progress" id="journeyProgress"></div>
-
-      <div class="journey-stops" id="journeyStops">
-        <div class="journey-stop" data-delay="0">
-          <div class="journey-stop-dot"><span>🚂</span></div>
-          <span class="journey-stop-name">Kolhapur Stn</span>
-          <span class="journey-stop-dist">Start</span>
-        </div>
-        <div class="journey-stop" data-delay="0.15">
-          <div class="journey-stop-dot"><span>🏛️</span></div>
-          <span class="journey-stop-name">Mahalaxmi Temple</span>
-          <span class="journey-stop-dist">Kolhapur</span>
-        </div>
-        <div class="journey-stop" data-delay="0.3">
-          <div class="journey-stop-dot"><span>🏯</span></div>
-          <span class="journey-stop-name">Panhala Fort</span>
-          <span class="journey-stop-dist">~55 km</span>
-        </div>
-        <div class="journey-stop" data-delay="0.45">
-          <div class="journey-stop-dot is-active"><span>⛩️</span></div>
-          <span class="journey-stop-name">Jyotiba Temple</span>
-          <span class="journey-stop-dist">~75 km</span>
-        </div>
-        <div class="journey-stop" data-delay="0.6">
-          <div class="journey-stop-dot is-active"><span>🛕</span></div>
-          <span class="journey-stop-name">Balumama Mandir</span>
-          <span class="journey-stop-dist">Admapur</span>
-        </div>
-        <div class="journey-stop" data-delay="0.75">
-          <div class="journey-stop-dot is-active"><span>🏨</span></div>
-          <span class="journey-stop-name">Morya Lodging</span>
-          <span class="journey-stop-dist">Your Stay 🙏</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════
      SANCTUARY / ABOUT LODGING
      ════════════════════════════════════════════════ -->
 <section class="sanctuary-section" id="sanctuary">
@@ -264,14 +210,14 @@
       <div class="sanctuary-image-wrap">
         <div class="sanctuary-image-frame">
           <picture>
-            <source srcset="images/main-building.webp" type="image/webp">
-            <source srcset="images/main-building.jpg" type="image/jpeg">
-            <img src="images/main-building.jpg" alt="Morya Lodging - Main Building" class="sanctuary-image" loading="lazy">
+            <source srcset="images/main_lodge.jpeg" type="image/jpeg">
+            <source srcset="images/main_lodge.jpeg" type="image/jpeg">
+            <img src="images/main_lodge.jpeg" alt="Morya Lodging - Main Building" class="sanctuary-image" loading="lazy">
           </picture>
         </div>
-        <div class="sanctuary-image-accent">
+        <!-- <div class="sanctuary-image-accent">
           <span>Walk to<br>Mandir<br>🛕</span>
-        </div>
+        </div> -->
       </div>
       <div class="sanctuary-content">
         <h2>Welcome Home, Pilgrim</h2>
@@ -291,93 +237,8 @@
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════════
-     STATS BANNER
-     ════════════════════════════════════════════════ -->
-<section class="stats-banner">
-  <div class="stats-inner">
-    <div class="stats-grid" id="statsGrid">
-      <div class="stat-card">
-        <div class="stat-number" data-count="3">0</div>
-        <div class="stat-label">Room Types</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" data-count="24">24/7</div>
-        <div class="stat-label">Service</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" data-count="5">0</div>
-        <div class="stat-label">Min to Mandir</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" data-count="100">0</div>
-        <div class="stat-label">Happy Pilgrims+</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- SECTION DIVIDER -->
 <div class="section-divider"><span>🌼</span></div>
-
-<!-- ════════════════════════════════════════════════
-     AMENITIES
-     ════════════════════════════════════════════════ -->
-<section class="amenities-section" id="amenities">
-  <div class="amenities-inner">
-    <div class="section-header">
-      <div class="section-eyebrow">Amenities · सुविधा</div>
-      <h2 class="section-title">Everything You Need</h2>
-      <p class="section-sub">Thoughtful comforts designed to make your pilgrimage feel like a retreat.</p>
-    </div>
-
-    <div class="amenities-grid" id="amenitiesGrid">
-      <div class="amenity-card">
-        <span class="amenity-icon">📶</span>
-        <h3 class="amenity-name">Free WiFi</h3>
-        <p class="amenity-desc">Stay connected with high-speed internet throughout the property.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🅿️</span>
-        <h3 class="amenity-name">Parking</h3>
-        <p class="amenity-desc">Secure, ample parking for cars and two-wheelers.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🕯️</span>
-        <h3 class="amenity-name">24/7 Reception</h3>
-        <p class="amenity-desc">Round-the-clock assistance for check-ins, queries, and comfort.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🧹</span>
-        <h3 class="amenity-name">Clean Rooms</h3>
-        <p class="amenity-desc">Immaculately maintained rooms with daily housekeeping.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🚿</span>
-        <h3 class="amenity-name">Hot Water</h3>
-        <p class="amenity-desc">Available 24/7 in all rooms and bathrooms.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🛕</span>
-        <h3 class="amenity-name">Temple Proximity</h3>
-        <p class="amenity-desc">Just a short walk to Shri Balumama Mandir for darshan.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🔒</span>
-        <h3 class="amenity-name">Security</h3>
-        <p class="amenity-desc">Safe and secure premises for a worry-free stay.</p>
-      </div>
-      <div class="amenity-card">
-        <span class="amenity-icon">🧘</span>
-        <h3 class="amenity-name">Peaceful Environment</h3>
-        <p class="amenity-desc">Quiet, serene atmosphere perfect for spiritual rejuvenation.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION DIVIDER -->
-<div class="section-divider"><span>🌸</span></div>
 
 <!-- ════════════════════════════════════════════════
      ROOMS — 3D Interactive Cards
@@ -400,7 +261,7 @@
           <picture>
             <source srcset="images/ac-room.webp" type="image/webp">
             <source srcset="images/ac-room.jpg" type="image/jpeg">
-            <img src="images/ac-room.jpg" alt="AC Room - Premium Comfort" loading="lazy">
+            <img src="images/ac_1.jpeg" alt="AC Room - Premium Comfort" loading="lazy">
           </picture>
           <div class="room-card-overlay"></div>
           <span class="room-card-badge">❄️ Premium</span>
@@ -500,6 +361,145 @@
 </section>
 
 <!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🌸</span></div>
+
+<!-- ════════════════════════════════════════════════
+     AMENITIES
+     ════════════════════════════════════════════════ -->
+<section class="amenities-section" id="amenities">
+  <div class="amenities-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Amenities · सुविधा</div>
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-sub">Thoughtful comforts designed to make your pilgrimage feel like a retreat.</p>
+    </div>
+
+    <div class="amenities-grid" id="amenitiesGrid">
+      <div class="amenity-card">
+        <span class="amenity-icon">📶</span>
+        <h3 class="amenity-name">Free WiFi</h3>
+        <p class="amenity-desc">Stay connected with high-speed internet throughout the property.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🅿️</span>
+        <h3 class="amenity-name">Parking</h3>
+        <p class="amenity-desc">Secure, ample parking for cars and two-wheelers.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🕯️</span>
+        <h3 class="amenity-name">24/7 Reception</h3>
+        <p class="amenity-desc">Round-the-clock assistance for check-ins, queries, and comfort.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🧹</span>
+        <h3 class="amenity-name">Clean Rooms</h3>
+        <p class="amenity-desc">Immaculately maintained rooms with daily housekeeping.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🚿</span>
+        <h3 class="amenity-name">Hot Water</h3>
+        <p class="amenity-desc">Available 24/7 in all rooms and bathrooms.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🛕</span>
+        <h3 class="amenity-name">Temple Proximity</h3>
+        <p class="amenity-desc">Just a short walk to Shri Balumama Mandir for darshan.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🔒</span>
+        <h3 class="amenity-name">Security</h3>
+        <p class="amenity-desc">Safe and secure premises for a worry-free stay.</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🧘</span>
+        <h3 class="amenity-name">Peaceful Environment</h3>
+        <p class="amenity-desc">Quiet, serene atmosphere perfect for spiritual rejuvenation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     STATS BANNER
+     ════════════════════════════════════════════════ -->
+<section class="stats-banner">
+  <div class="stats-inner">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-number" data-count="3">0</div>
+        <div class="stat-label">Room Types</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="24">24/7</div>
+        <div class="stat-label">Service</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="5">0</div>
+        <div class="stat-label">Min to Mandir</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-count="100">0</div>
+        <div class="stat-label">Happy Pilgrims+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span>🪔</span></div>
+
+<!-- ════════════════════════════════════════════════
+     PILGRIM'S ROUTE / JOURNEY
+     ════════════════════════════════════════════════ -->
+<section class="journey-section" id="journey">
+  <div class="journey-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Pilgrim's Route · पालखी यात्रा</div>
+      <h2 class="section-title">Your Sacred Journey</h2>
+      <p class="section-sub">From Kolhapur's grand temples to the peaceful grace of Balumama — a pilgrimage through faith and history.</p>
+    </div>
+
+    <div class="journey-map-container">
+      <div class="journey-line-track"></div>
+      <div class="journey-line-progress" id="journeyProgress"></div>
+
+      <div class="journey-stops" id="journeyStops">
+        <div class="journey-stop" data-delay="0">
+          <div class="journey-stop-dot"><span>🚂</span></div>
+          <span class="journey-stop-name">Kolhapur Stn</span>
+          <span class="journey-stop-dist">Start</span>
+        </div>
+        <div class="journey-stop" data-delay="0.15">
+          <div class="journey-stop-dot"><span>🏛️</span></div>
+          <span class="journey-stop-name">Mahalaxmi Temple</span>
+          <span class="journey-stop-dist">Kolhapur</span>
+        </div>
+        <div class="journey-stop" data-delay="0.3">
+          <div class="journey-stop-dot"><span>🏯</span></div>
+          <span class="journey-stop-name">Panhala Fort</span>
+          <span class="journey-stop-dist">~55 km</span>
+        </div>
+        <div class="journey-stop" data-delay="0.45">
+          <div class="journey-stop-dot is-active"><span>⛩️</span></div>
+          <span class="journey-stop-name">Jyotiba Temple</span>
+          <span class="journey-stop-dist">~75 km</span>
+        </div>
+        <div class="journey-stop" data-delay="0.6">
+          <div class="journey-stop-dot is-active"><span>🛕</span></div>
+          <span class="journey-stop-name">Balumama Mandir</span>
+          <span class="journey-stop-dist">Admapur</span>
+        </div>
+        <div class="journey-stop" data-delay="0.75">
+          <div class="journey-stop-dot is-active"><span>🏨</span></div>
+          <span class="journey-stop-name">Morya Lodging</span>
+          <span class="journey-stop-dist">Your Stay 🙏</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
 <div class="section-divider"><span>🙏</span></div>
 
 <!-- ════════════════════════════════════════════════
@@ -547,6 +547,7 @@
       <button class="testimonial-dot" data-index="2" aria-label="Slide 3"></button>
       <button class="testimonial-dot" data-index="3" aria-label="Slide 4"></button>
     </div>
+    <div class="testimonial-counter" id="testimonialCounter">1 / 4</div>
   </div>
 </section>
 
@@ -684,7 +685,7 @@
     </div>
   </div>
 
-  <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;opacity:.025;pointer-events:none;" viewBox="0 0 600 600" fill="none">
+  <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(500px,90vw);height:min(500px,90vw);opacity:.025;pointer-events:none;" viewBox="0 0 600 600" fill="none">
     <circle cx="300" cy="300" r="280" stroke="#D4AF37" stroke-width=".8"/>
     <circle cx="300" cy="300" r="220" stroke="#FF6B35" stroke-width=".8"/>
     <circle cx="300" cy="300" r="160" stroke="#D4AF37" stroke-width=".8"/>
@@ -762,6 +763,8 @@
     <div class="lightbox-counter" id="lightboxCounter"></div>
   </div>
 </div>
+
+
 
 <!-- Main Script -->
 <script src="js/main.js"></script>
