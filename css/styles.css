@@ -379,6 +379,127 @@ section { position:relative; overflow:hidden; }
 .journey-stop-dist { font-size:8px; color:var(--saffron); letter-spacing:.04em; }
 
 /* ═══════════════════════════════════════════════════════
+   JOURNEY — IMAGE CAROUSEL (Continuous Loop)
+   ═══════════════════════════════════════════════════════ */
+.journey-carousel {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 48px;
+  overflow: hidden;
+  position: relative;
+  touch-action: pan-y pinch-zoom;
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(107,39,55,0.12);
+}
+.journey-carousel::before,
+.journey-carousel::after {
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:60px;
+  z-index:3;
+  pointer-events:none;
+}
+.journey-carousel::before {
+  left:0;
+  background:linear-gradient(90deg, #FFF8E7 0%, transparent 100%);
+}
+.journey-carousel::after {
+  right:0;
+  background:linear-gradient(90deg, transparent 0%, #FFF8E7 100%);
+}
+.journey-carousel-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: journeyScroll 40s linear infinite;
+  padding: 12px 0;
+}
+@keyframes journeyScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.journey-carousel-slide {
+  flex: 0 0 260px;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ivory);
+  border: 1px solid var(--border-strong);
+  transition: transform 0.4s, box-shadow 0.4s;
+  cursor: pointer;
+}
+.journey-carousel-slide:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 36px rgba(255,107,53,0.18);
+}
+.journey-carousel-image-wrap {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--parchment), var(--cream));
+}
+.journey-carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.journey-carousel-slide:hover .journey-carousel-img {
+  transform: scale(1.1);
+}
+.journey-carousel-label {
+  padding: 12px 16px 14px;
+  background: linear-gradient(to bottom, var(--ivory), #FFF5E0);
+  border-top: 1px solid var(--glass-border);
+}
+.journey-carousel-name {
+  display: block;
+  font-family: var(--font-sacred);
+  font-size: 13px;
+  color: var(--maroon);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.journey-carousel-location {
+  display: block;
+  font-size: 10px;
+  color: var(--saffron);
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+/* Pause on hover (desktop only) */
+@media (hover: hover) {
+  .journey-carousel.paused .journey-carousel-track {
+    animation-play-state: paused;
+  }
+}
+
+/* On touch devices: let touches pass through for vertical page scrolling */
+@media (hover: none) and (pointer: coarse) {
+  .journey-carousel-track {
+    pointer-events: none;
+  }
+  /* Disable hover effects on slides for touch devices */
+  .journey-carousel-slide:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .journey-carousel-slide:hover .journey-carousel-img {
+    transform: none !important;
+  }
+  .journey-carousel {
+    touch-action: pan-y pinch-zoom;
+  }
+}
+/* ═══════════════════════════════════════════════════════
    SANCTUARY
    ═══════════════════════════════════════════════════════ */
 .sanctuary-section { padding:100px 5%; background:linear-gradient(160deg, #FFFAF0 0%, #FFF8E7 50%, #FDF3D6 100%); }
@@ -811,8 +932,22 @@ section { position:relative; overflow:hidden; }
 .contact-btn-primary, .contact-btn-secondary { padding:16px 48px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all .35s; border-radius:2px; position:relative; overflow:hidden; }
 .contact-btn-primary { background:linear-gradient(135deg, var(--saffron), var(--saffron-deep)); color:#fff; border:none; box-shadow:0 8px 32px rgba(255,107,53,0.25); }
 .contact-btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(255,107,53,0.35); }
-.contact-btn-secondary { background:transparent; color:var(--maroon); border:1.5px solid var(--border-strong); }
+.contact-btn-secondary { background:transparent; color:var(--maroon); border:1.5px solid var(--border-strong); display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
 .contact-btn-secondary:hover { border-color:var(--saffron); background:rgba(255,107,53,0.03); }
+.contact-btn-secondary img {
+  height: 28px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+.contact-whatsapp-icon {
+  height: 22px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  object-fit: contain;
+}
 .contact-address { display:inline-block; padding:28px 40px; background:rgba(255,248,231,0.8); backdrop-filter:blur(10px); border:1px solid var(--glass-border); text-align:left; box-shadow:var(--shadow-soft); border-radius:8px; }
 .contact-address p { font-size:13px; color:var(--text-light); line-height:2.2; }
 .contact-address strong { color:var(--text); }
@@ -821,14 +956,34 @@ section { position:relative; overflow:hidden; }
 .whatsapp-float { position:fixed; bottom:100px; right:24px; z-index:45; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg, #25D366, #128C7E); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 6px 24px rgba(37,211,102,0.35); transition:all .3s; opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
 .whatsapp-float:hover { transform:translateY(-3px) scale(1.06); }
 .whatsapp-float-pulse { position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(37,211,102,0.25); animation:whatsappPulse 2.5s ease-out infinite; }
+.whatsapp-float-img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
 @keyframes whatsappPulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.6); opacity:0; } }
 .sticky-book { position:fixed; bottom:0; left:0; right:0; background:rgba(255,248,231,0.90); backdrop-filter:blur(20px); border-top:1px solid var(--glass-border); padding:12px 5% calc(12px + env(safe-area-inset-bottom, 0px)); display:flex; align-items:center; justify-content:space-between; z-index:40; transform:translateY(100%); transition:transform .45s; }
 .sticky-book.visible { transform:translateY(0); }
 .sticky-book-text { font-family:var(--font-sacred); font-size:12px; color:var(--maroon); letter-spacing:.04em; }
 .sticky-book-btns { display:flex; gap:10px; }
-.sticky-book-btn { padding:10px 24px; font-size:9px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all .3s; border-radius:2px; }
+.sticky-book-btn { padding:10px 24px; font-size:9px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all .3s; border-radius:2px; display:inline-flex; align-items:center; gap:4px; }
 .sticky-book-btn.primary { background:linear-gradient(135deg, var(--saffron), var(--saffron-deep)); color:#fff; border:none; box-shadow:0 4px 16px rgba(255,107,53,0.20); }
 .sticky-book-btn.secondary { background:transparent; color:var(--maroon); border:1px solid var(--border-strong); }
+.sticky-book-whatsapp-icon {
+  height: 14px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+@media (max-width:768px) {
+  .sticky-book-whatsapp-icon { height: 12px; }
+}
+@media (max-width:480px) {
+  .sticky-book-whatsapp-icon { height: 10px; }
+}
 
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(44,44,44,0.55); backdrop-filter:blur(16px); z-index:500; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.open { display:flex; }
@@ -967,6 +1122,12 @@ footer a:hover { color:var(--gold-light); }
   /* Journey */
   .journey-stops { gap:10px; }
   .journey-stop-name { font-size:7px; max-width:60px; }
+  .journey-carousel { border-radius:12px; box-shadow:0 8px 32px rgba(107,39,55,0.10); }
+  .journey-carousel-track { animation-duration: 30s; gap: 12px; }
+  .journey-carousel-slide { flex: 0 0 220px; }
+  .journey-carousel-name { font-size: 11px; }
+  .journey-carousel-location { font-size: 9px; }
+  .journey-carousel-label { padding: 10px 14px; }
 
   /* General */
   section { padding:80px 5%; }
@@ -1090,6 +1251,13 @@ footer a:hover { color:var(--gold-light); }
   .journey-stop-dot { width:42px; height:42px; flex-shrink:0; z-index:2; }
   .journey-stop-name { font-size:12px; max-width:none; text-align:left; }
   .journey-stop-dist { font-size:10px; }
+  .journey-carousel { margin-bottom: 36px; }
+  .journey-carousel::before, .journey-carousel::after { width: 40px; }
+  .journey-carousel-track { animation-duration: 25s; gap: 10px; padding: 10px 0; }
+  .journey-carousel-slide { flex: 0 0 200px; border-radius: 10px; }
+  .journey-carousel-name { font-size: 11px; }
+  .journey-carousel-location { font-size: 9px; }
+  .journey-carousel-label { padding: 8px 12px 10px; }
 
   /* Lightbox */
   .lightbox-prev, .lightbox-next { display:none; }
@@ -1180,6 +1348,7 @@ footer a:hover { color:var(--gold-light); }
   .mobile-menu a { font-size:18px; gap:20px; }
   .mobile-menu .nav-cta { padding:12px 36px; font-size:11px; }
   .whatsapp-float { width:40px; height:40px; bottom:100px; right:12px; }
+  .whatsapp-float-img { width:22px; height:22px; }
   .section-title { font-size:clamp(18px,8vw,28px); }
   .section-sub { font-size:11px; }
   .room-card { min-width:82vw; max-width:300px; border-radius:14px; }
@@ -1227,6 +1396,13 @@ footer a:hover { color:var(--gold-light); }
   .journey-stop-dot { width:36px; height:36px; font-size:13px; }
   .journey-stop-name { font-size:11px; }
   .journey-stop-dist { font-size:9px; }
+  .journey-carousel { margin-bottom: 32px; }
+  .journey-carousel::before, .journey-carousel::after { width: 30px; }
+  .journey-carousel-track { animation-duration: 20s; gap: 8px; padding: 8px 0; }
+  .journey-carousel-slide { flex: 0 0 150px; border-radius: 8px; }
+  .journey-carousel-name { font-size: 9px; }
+  .journey-carousel-location { font-size: 8px; }
+  .journey-carousel-label { padding: 6px 8px 8px; }
 }
 
 /* ── Tiny screens (≤360px) ── */
@@ -1286,6 +1462,7 @@ footer a:hover { color:var(--gold-light); }
   nav { height:48px; }
   .mobile-menu { top:48px; }
   .whatsapp-float { width:34px; height:34px; bottom:90px; right:8px; }
+  .whatsapp-float-img { width:18px; height:18px; }
   footer { padding:20px 4% 70px; }
   .location-grid { gap:12px; }
   .location-nearby-tag { font-size:7px; padding:3px 6px; }
@@ -1327,6 +1504,13 @@ footer a:hover { color:var(--gold-light); }
   .stat-label { font-size:7px; }
   .gallery-item { min-height:55px; }
   .gallery-item:nth-child(1) { min-height:90px; }
+  .journey-carousel { border-radius: 8px; }
+  .journey-carousel-track { animation-duration: 18s; gap: 6px; padding: 6px 0; }
+  .journey-carousel-slide { flex: 0 0 130px; border-radius: 6px; }
+  .journey-carousel-name { font-size: 8px; }
+  .journey-carousel-location { font-size: 7px; }
+  .journey-carousel-label { padding: 5px 6px 6px; }
+  .journey-carousel-image-wrap { aspect-ratio: 4/3; }
   .sanctuary-content h2 { font-size:clamp(16px,8vw,20px); }
   .sanctuary-content p { font-size:11px; }
   .sanctuary-feature { font-size:11px; }
@@ -1366,11 +1550,18 @@ footer a:hover { color:var(--gold-light); }
   .sticky-book-text { font-size:7px; }
   .sticky-book-btn { padding:5px 12px; font-size:6px; }
   .whatsapp-float { width:30px; height:30px; bottom:80px; right:6px; }
+  .whatsapp-float-img { width:16px; height:16px; }
   footer { padding:16px 3% 65px; font-size:7px; }
   .footer-social-link { width:26px; height:26px; font-size:11px; }
   .loader-text { font-size:18px; }
   .loader-image { width:80px; height:80px; }
   .loader-image-img { width:56px; height:56px; }
+  .journey-carousel { border-radius: 10px; }
+  .journey-carousel-track { animation-duration: 25s; gap: 8px; padding: 8px 0; }
+  .journey-carousel-slide { flex: 0 0 180px; border-radius: 10px; }
+  .journey-carousel-name { font-size: 10px; }
+  .journey-carousel-location { font-size: 8px; }
+  .journey-carousel-label { padding: 8px 10px; }
   .location-nearby-tag { font-size:6px; padding:3px 5px; }
 }
 

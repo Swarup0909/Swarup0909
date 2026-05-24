@@ -847,7 +847,7 @@ ScrollTrigger.create({ trigger: '#rooms', start: 'top 60%',
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function closeModalOut(e) { if (e.target.id === 'modal') closeModal(); }
-function openWhatsApp() { window.open('https://wa.me/91XXXXXXXXXX', '_blank'); }
+function openWhatsApp() { window.open('https://wa.me/919022397095', '_blank'); }
 
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') { closeModal(); document.getElementById('lightbox').classList.remove('open'); closeDoorExperience(); }
@@ -899,6 +899,32 @@ document.addEventListener('click', function (e) {
       onEnter: function () { setTimeout(function () { stop.classList.add('revealed'); }, i * 200); }
     });
   });
+})();
+
+/* 29b. JOURNEY CAROUSEL — Duplicate slides for seamless loop + touch/scroll handling */
+(function () {
+  var track = document.getElementById('journeyCarouselTrack');
+  var carousel = document.getElementById('journeyCarousel');
+  if (!track || !carousel) return;
+  var slides = track.querySelectorAll('.journey-carousel-slide');
+  if (!slides.length) return;
+
+  // Clone all slides for seamless marquee loop
+  slides.forEach(function (slide) {
+    var clone = slide.cloneNode(true);
+    track.appendChild(clone);
+  });
+
+  // ── Pause/resume animation on hover (desktop) ──
+  carousel.addEventListener('mouseenter', function () {
+    carousel.classList.add('paused');
+  });
+  carousel.addEventListener('mouseleave', function () {
+    carousel.classList.remove('paused');
+  });
+
+  // ── No touch-paused handling — animation runs continuously on mobile.
+  // touch-action: pan-y in CSS allows vertical page scrolling while keeping the carousel animating.
 })();
 
 /* 30. GALLERY 3D TILT — disabled on touch devices */
